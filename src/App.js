@@ -4,7 +4,8 @@ import './App.css';
 import SelectCharacter from './Components/SelectCharacter';
 import { CONTRACT_ADDRESS, transformCharacterData } from './constants';
 import myEpicGame from './utils/MyEpicGame.json';
-import { etheres, ethers } from 'ethers';
+import { ethers } from 'ethers';
+import Arena from './Components/Arena';
 
 // Constants
 const TWITTER_HANDLE = '_buildspace';
@@ -56,8 +57,10 @@ const App = () => {
           </button>
         </div>
       )
-    } else if(currentAccount && !characterNFT){
+    } else if (currentAccount && !characterNFT){
       return <SelectCharacter setCharacterNFT={setCharacterNFT} />;
+    } else if (currentAccount && characterNFT){
+      return <Arena characterNFT={characterNFT} setCharacterNFT={setCharacterNFT} currentAccount={currentAccount} />
     }
   };
 
