@@ -3,11 +3,13 @@ import "./SelectCharacter.css";
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, transformCharacterData } from "../../constants";
 import myEpicGame from "../../utils/MyEpicGame.json"
+import LoadingIndicator from "../LoadingIndicator";
 
 const SelectCharacter = ({ setCharacterNFT }) => {
 
     const [characters, setCharacters] = React.useState([])
     const [gameContract, setGameContract] = React.useState(null)
+    const [mintingCharacter, setMintingCharacter] = React.useState(false)
 
     React.useEffect(() => {
         const { ethereum } = window;
@@ -88,12 +90,14 @@ const SelectCharacter = ({ setCharacterNFT }) => {
 
     const mintCharacterNFTaction = async (characterId) => {
         try{
+            setMintingCharacter(true)
             console.log("Minting character in progress...")
             const mintTxn = await gameContract.mintCharacterNFT(characterId)
             await mintTxn.wait();
             console.log("mintTxn: ", mintTxn)            
         }catch(e) {
             console.log(e);
+            setMintingCharacter(false);
         }
     }
 
@@ -103,9 +107,21 @@ const SelectCharacter = ({ setCharacterNFT }) => {
             <h2>
                 Mint your Hero, Choose Wisely.
             </h2>
-            {console.log(characters.length)}
             {characters.length > 0 && (
                 <div className="character-grid"> {renderCharacters()}</div>
+            )}
+
+            {mintingCharacter && (
+                <div className="loading">
+                    <div className="indicator">
+                        <LoadingIndicator />
+                        <p>Minting in progress...</p>
+                    </div>
+                    <img
+                        src="https://media2.giphy.com/media/61tYloUgq1eOk/giphy.gif?cid=ecf05e47dg95zbpabxhmhaksvoy8h526f96k4em0ndvx078s&rid=giphy.gif&ct=g"
+                        alt="Minting loading indicator"
+                    />
+                </div>
             )}
         </div>
     ); 

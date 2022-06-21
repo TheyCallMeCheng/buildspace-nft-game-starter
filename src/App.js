@@ -6,6 +6,7 @@ import { CONTRACT_ADDRESS, transformCharacterData } from './constants';
 import myEpicGame from './utils/MyEpicGame.json';
 import { ethers } from 'ethers';
 import Arena from './Components/Arena';
+import LoadingIndicator from "./Components/LoadingIndicator"
 
 // Constants
 const TWITTER_HANDLE = '_buildspace';
@@ -15,6 +16,7 @@ const App = () => {
 
   const [currentAccount, setCurrentAccount] = React.useState(null);
   const [characterNFT, setCharacterNFT] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const checkIfWalletIsConnected = async () => {
     try{
@@ -22,6 +24,7 @@ const App = () => {
 
       if(!ethereum) {
         console.log("Make sure you have Metamask!");
+        setIsLoading(false);
         return;
       } else {
 
@@ -39,9 +42,15 @@ const App = () => {
     }catch(e){
       console.log(e);
     }
+
+    setIsLoading(false);
   };
 
   const renderContent = () => {
+    if(isLoading){
+      return <LoadingIndicator />;
+    }
+
     if(!currentAccount){
       return(
         <div className='connect-wallet-container'>
@@ -85,6 +94,7 @@ const App = () => {
   }
 
   React.useEffect(() => {
+    setIsLoading(true);
     checkIfWalletIsConnected();
     const checkNetwork = async () => {
       try {
@@ -116,6 +126,8 @@ const App = () => {
       } else {
         console.log('No character NFT found');
       }
+
+      setIsLoading(false);
     };
   
     if (currentAccount) {
